@@ -3,9 +3,11 @@ import { useRef } from 'react';
 
 function TodoInput({ addTodo }) {
   let inputRef = useRef('');
+
   function handleSubmit(e) {
     e.preventDefault();
     addTodo(inputRef.current.value);
+    inputRef.current.value = '';
   }
 
   return (

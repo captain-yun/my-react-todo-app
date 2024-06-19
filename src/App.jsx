@@ -6,17 +6,31 @@ import { useState } from 'react';
 function App() {
   const [todos, setTodos] = useState([
     {
+      id: 1,
       completed: true,
       title: '리액트 공부하기',
     },
     {
+      id: 2,
       completed: false,
       title: '축구 연습하기',
     },
   ]);
 
   function addTodo(todo) {
-    setTodos([...todos, { title: todo, completed: false }]);
+    setTodos([
+      ...todos,
+      { id: todos.length + 1, title: todo, completed: false },
+    ]);
+  }
+  function updateTodo(newTodo) {
+    setTodos(
+      todos.map((todo) => (todo.id === newTodo.id ? { ...newTodo } : todo))
+    );
+  }
+
+  function removeTodo(id) {
+    setTodos(todos.filter((todo) => todo.id !== id));
   }
 
   return (
@@ -26,7 +40,11 @@ function App() {
           <h1 className="text-4xl font-bold text-black-600 ml-2">TodoList</h1>
         </div>
         <TodoInput addTodo={addTodo} />
-        <TodoList todos={todos} />
+        <TodoList
+          todos={todos}
+          updateTodo={updateTodo}
+          removeTodo={removeTodo}
+        />
       </div>
     </div>
   );

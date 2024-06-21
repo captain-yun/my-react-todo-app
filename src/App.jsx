@@ -1,36 +1,57 @@
 import './App.css';
 import TodoInput from './components/TodoInput';
 import TodoList from './components/TodoList';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function App() {
-  const [todos, setTodos] = useState([
-    {
-      id: 1,
-      completed: true,
-      title: '리액트 공부하기',
-    },
-    {
-      id: 2,
-      completed: false,
-      title: '축구 연습하기',
-    },
-  ]);
+  const [todos, setTodos] = useState([]);
 
-  function addTodo(todo) {
-    setTodos([
-      ...todos,
-      { id: todos.length + 1, title: todo, completed: false },
-    ]);
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/todos')
+      .then((res) => {
+        console.log(res);
+        setTodos(res.data);
+      })
+      .catch((err) => {
+        console.error('Error occured on fetching', err);
+      });
+  }, []);
+
+  function addTodo(title) {
+    axios
+      .post('http://localhost:3001/todos', { title: title, completed: false })
+      .then((res) => {
+        setTodos([...todos, res.data]);
+      })
+      .catch((err) => {
+        console.error('Error occured on fetching', err);
+      });
   }
+
   function updateTodo(newTodo) {
-    setTodos(
-      todos.map((todo) => (todo.id === newTodo.id ? { ...newTodo } : todo))
-    );
+    axios
+      .put(`http://localhost:3001/todos/${newTodo.id}`, newTodo)
+      .then((response) => {
+        setTodos(
+          todos.map((todo) => (todo.id === newTodo.id ? response.data : todo))
+        );
+      })
+      .catch((error) => {
+        console.error('There was an error updating the todo!', error);
+      });
   }
 
   function removeTodo(id) {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    axios
+      .delete(`http://localhost:3001/todos/${id}`)
+      .then(() => {
+        setTodos(todos.filter((todo) => todo.id !== id));
+      })
+      .catch((error) => {
+        console.error('There was an error deleting the todo!', error);
+      });
   }
 
   return (

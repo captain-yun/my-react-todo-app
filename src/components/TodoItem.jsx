@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FiEdit2, FiTrash2, FiCheck } from 'react-icons/fi';
 
-function TodoItem({ id, title, completed, updateTodo, removeTodo }) {
+function TodoItem({ _id: id, title, completed, updateTodo, removeTodo }) {
   const [isEditing, setIsEditing] = useState(false);
   const [inputTitle, setInputTitle] = useState(title);
   const inputRef = useRef(null);

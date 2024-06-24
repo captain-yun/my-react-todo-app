@@ -9,6 +9,7 @@ function TodoPage() {
   const fetchTodos = async () => {
     try {
       const response = await api.get('/todos');
+      console.log(response.data);
       setTodos(response.data);
     } catch (error) {
       console.error('Error fetching todos:', error);
@@ -31,7 +32,7 @@ function TodoPage() {
       .put(`/todos/${newTodo.id}`, newTodo)
       .then((response) => {
         setTodos(
-          todos.map((todo) => (todo.id === newTodo.id ? response.data : todo))
+          todos.map((todo) => (todo._id == newTodo.id ? response.data : todo))
         );
       })
       .catch((error) => {
@@ -43,7 +44,7 @@ function TodoPage() {
     api
       .delete(`/todos/${id}`)
       .then(() => {
-        setTodos(todos.filter((todo) => todo.id !== id));
+        setTodos(todos.filter((todo) => todo._id !== id));
       })
       .catch((error) => {
         console.error('There was an error deleting the todo!', error);

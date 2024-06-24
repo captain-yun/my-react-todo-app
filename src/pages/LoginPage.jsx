@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../api/api';
 
 function LoginPage({ setIsAuthenticated }) {
   const [username, setUsername] = useState('');
@@ -7,14 +8,10 @@ function LoginPage({ setIsAuthenticated }) {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const response = await fetch('http://localhost:3001/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
-    if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem('accessToken', data.accessToken);
+    const response = await api.post('/auth/login', { username, password });
+
+    if (response.statusText == 'OK') {
+      localStorage.setItem('accessToken', response.data.accessToken);
       setIsAuthenticated(true);
       navigate('/todos');
     } else {
@@ -28,13 +25,13 @@ function LoginPage({ setIsAuthenticated }) {
       <input
         type="text"
         value={username}
-        onChange={e => setUsername(e.target.value)}
+        onChange={(e) => setUsername(e.target.value)}
         placeholder="Username"
       />
       <input
         type="password"
         value={password}
-        onChange={e => setPassword(e.target.value)}
+        onChange={(e) => setPassword(e.target.value)}
         placeholder="Password"
       />
       <button onClick={handleLogin}>Login</button>
